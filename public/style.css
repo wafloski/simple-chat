@@ -1,0 +1,64 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+}
+
+html, input {
+    font-family: Arial,sans-serif;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.wrapper {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    height: 100%;
+    width: 100%;
+}
+
+.container.login {
+    background-color: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.container.login .form {
+    text-align: center;
+}
+
+.container.login .form .usernameInput {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    text-align: center;
+    width: 320px;
+    color: #fff;
+}
+
+.container.chat {
+    display: none;
+}
+
+.container.chat .chatArea {
+    height: 400px;
+}
+
+
+
+
