@@ -112,7 +112,7 @@ $(function(){
         getTypingMessages(data).fadeOut(function () {
             $(this).remove();
         });
-    }
+    };
 
     const updateTyping = () => {
         if (connected) {
@@ -131,17 +131,11 @@ $(function(){
                 }
             }, 400);
         }
-    }
+    };
 
     const getTypingMessages = (data) => {
         return $('.typing.message').filter(function (i) {
             return $(this).data('username') === data.username;
-        });
-    };
-
-    const removeChatTyping = (data) => {
-        getTypingMessages(data).fadeOut(function () {
-            $(this).remove();
         });
     };
 
@@ -200,6 +194,14 @@ $(function(){
 
     socket.on('new message', (data) => {
         addChatMessage(data);
+    });
+
+    socket.on('typing', (data) => {
+        addChatTyping(data);
+    });
+
+    socket.on('stop typing', (data) => {
+        removeChatTyping(data);
     });
 
     socket.on('user left', (data) => {
