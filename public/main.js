@@ -9,9 +9,9 @@ $(function(){
         $chatPage = $('.container.chat'),
         $messages = $('.messages'),
         username,
+        userColor,
         connected = false,
-        typing = false,
-        lastTypingTime;
+        typing = false;
 
     const addParticipantsMessage = (data) => {
         let message = "";
@@ -25,12 +25,12 @@ $(function(){
 
     const setUsername = () => {
         username = cleanInput($usernameInput.val().trim());
+        userColor = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
         if(username) {
             $loginPage.fadeOut();
             $chatPage.css('display','flex');
             $loginPage.off('click');
             $currentInput = $messageInput.focus();
-
             socket.emit('add user', username);
         }
     };
@@ -42,7 +42,8 @@ $(function(){
             $messageInput.val('');
             addChatMessage({
                 username: username,
-                message: message
+                message: message,
+                userColor: userColor
             });
             // tell server to execute 'new message' and send along one parameter
             socket.emit('new message', message);
@@ -61,7 +62,8 @@ $(function(){
         }
 
         let $usernameDiv = $('<span class="username"/>')
-          .text(data.username);
+            .text(data.username)
+            .css('color', data.userColor);
 
         let $messageBodyDiv = $('<span class="messageBody">')
           .text(data.message);
@@ -120,16 +122,15 @@ $(function(){
                 typing = true;
                 socket.emit('typing');
             }
-            lastTypingTime = (new Date()).getTime();
+        }
+    };
 
-            setTimeout(() => {
-                var typingTimer = (new Date()).getTime();
-                var timeDiff = typingTimer - lastTypingTime;
-                if (timeDiff >= 400 && typing) {
-                    socket.emit('stop typing');
-                    typing = false;
-                }
-            }, 400);
+    const stopTyping = () => {
+        if (connected) {
+            if (typing) {
+                typing = false;
+                socket.emit('stop typing');
+            }
         }
     };
 
@@ -137,6 +138,10 @@ $(function(){
         return $('.typing.message').filter(function (i) {
             return $(this).data('username') === data.username;
         });
+    };
+
+    const getUsernameColor = () => {
+        return '#'+(Math.random()*0xFFFFFF<<0).toString(16);
     };
 
     // Log a message in chat window
@@ -168,8 +173,12 @@ $(function(){
         }
     });
 
-    $messageInput.on('input', () => {
+    $messageInput.on('focus', () => {
         updateTyping();
+    });
+
+    $messageInput.on('focusout', () => {
+        stopTyping();
     });
 
     // Click events
