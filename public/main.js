@@ -104,7 +104,13 @@ $(function(){
         return $('.typing.message').filter(function (i) {
             return $(this).data('username') === data.username;
         });
-    }
+    };
+
+    const removeChatTyping = (data) => {
+        getTypingMessages(data).fadeOut(function () {
+            $(this).remove();
+        });
+    };
 
     // Log a message in chat window
     const log = (message, options) => {
@@ -159,6 +165,16 @@ $(function(){
 
     socket.on('new message', (data) => {
         addChatMessage(data);
+    });
+
+    socket.on('user left', (data) => {
+        log(data.username + ' left');
+        addParticipantsMessage(data);
+        removeChatTyping(data);
+    });
+
+    socket.on('disconnect', () => {
+        log('you have been disconnected');
     });
 
 });

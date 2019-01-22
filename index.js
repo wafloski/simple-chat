@@ -34,6 +34,16 @@ io.on('connection', (socket) => {
             message: data
         });
     });
+
+    socket.on('disconnect', () => {
+        if (addedUser) {
+            --numUsers;
+            socket.broadcast.emit('user left', {
+                username: socket.username,
+                numUsers: numUsers
+            });
+        }
+    });
 });
 
 app.get('/', function(req,res){
