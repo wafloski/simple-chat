@@ -53,10 +53,40 @@ html, body {
 
 .container.chat {
     display: none;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .container.chat .chatArea {
-    height: 400px;
+    min-height: 400px;
+}
+
+.container.chat .messageInput {
+    border: 4px solid #222;
+    height: 60px;
+    outline: none;
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    color: #111;
+}
+
+.container.chat .log {
+    color: gray;
+    font-size: 70%;
+    margin: 5px;
+    text-align: center;
+}
+
+.container.chat .username {
+    font-weight: 700;
+    overflow: hidden;
+    padding-right: 15px;
+    text-align: right;
+}
+
+.container.chat .messages {
+    list-style: none;
 }
 
 
