@@ -9,7 +9,9 @@ $(function(){
         $chatPage = $('.container.chat'),
         $messages = $('.messages'),
         username,
-        connected = false;
+        connected = false,
+        typing = false,
+        lastTypingTime;
 
     const addParticipantsMessage = (data) => {
         let message = "";
@@ -100,6 +102,37 @@ $(function(){
         $messages[0].scrollTop = $messages[0].scrollHeight;
     };
 
+    const addChatTyping = (data) => {
+        data.typing = true;
+        data.message = 'is typing';
+        addChatMessage(data);
+    };
+
+    const removeChatTyping = (data) => {
+        getTypingMessages(data).fadeOut(function () {
+            $(this).remove();
+        });
+    }
+
+    const updateTyping = () => {
+        if (connected) {
+            if (!typing) {
+                typing = true;
+                socket.emit('typing');
+            }
+            lastTypingTime = (new Date()).getTime();
+
+            setTimeout(() => {
+                var typingTimer = (new Date()).getTime();
+                var timeDiff = typingTimer - lastTypingTime;
+                if (timeDiff >= 400 && typing) {
+                    socket.emit('stop typing');
+                    typing = false;
+                }
+            }, 400);
+        }
+    }
+
     const getTypingMessages = (data) => {
         return $('.typing.message').filter(function (i) {
             return $(this).data('username') === data.username;
@@ -141,12 +174,14 @@ $(function(){
         }
     });
 
+    $messageInput.on('input', () => {
+        updateTyping();
+    });
 
     // Click events
     $loginPage.click(() => {
         $currentInput.focus();
     });
-
 
     // Socket events
     socket.on('login', (data) => {
