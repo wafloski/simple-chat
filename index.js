@@ -15,7 +15,6 @@ io.on('connection', (socket) => {
     let addedUser = false;
     socket.on('add user', (username) => {
         if (addedUser) return;
-
         socket.username = username;
         ++numUsers;
         addedUser = true;
@@ -25,6 +24,14 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('user joined', {
             username: socket.username,
             numUsers: numUsers
+        });
+    });
+
+    socket.on('new message', (data) => {
+        // we tell the client to execute 'new message'
+        socket.broadcast.emit('new message', {
+            username: socket.username,
+            message: data
         });
     });
 });
